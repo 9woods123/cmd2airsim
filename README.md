@@ -3,7 +3,10 @@
 # SE3 Controller and EasySim Setup
 
 ## Overview
-This guide explains how to set up and launch the SE3 controller for multicopter takeoff, control the multicopter to follow either a circular or a trajectory path, and receive image messages from Unreal Engine (UE) via EasySim and publish them to ROS.
+This guide explains how to set up and launch the SE3 controller for multicopter takeoff, control the multicopter to follow either a circular or a trajectory path, and receive image messages from Unreal Engine (UE) via EasySim and publish them to ROS.  
+
+## 中文README
+https://github.com/9woods123/cmd2airsim/blob/master/README_ch.md
 
 ---
 
