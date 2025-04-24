@@ -52,6 +52,8 @@ In a terminal, launch the SE3 controller to take off the multicopter:
 roslaunch se3controller se3controller.launch
 ```
 
+![2025-04-24 19-18-39 的屏幕截图](https://github.com/user-attachments/assets/7c34966b-2ffa-4b9d-a547-0e56d9310391)
+
 ---
 
 ### 3. Control the Multicopter (Choose One)
@@ -64,11 +66,16 @@ After takeoff, you can choose **one** of the following control modes:
   roslaunch se3controller flying_example.launch
   ```
 
+open rviz and set frame se "world_enu"
+
+
 - **To follow a predefined trajectory**, run:
 
   ```bash
   roslaunch se3controller flying_traj_example.launch
   ```
+
+![2025-04-24 19-19-59 的屏幕截图](https://github.com/user-attachments/assets/3a0dfe4e-90ae-44d8-8690-a8cd4f2dddf2)
 
 > 💡 Only one control mode should be run at a time.
 
