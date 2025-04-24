@@ -66,7 +66,9 @@ After takeoff, you can choose **one** of the following control modes:
   roslaunch se3controller flying_example.launch
   ```
 
-open rviz and set frame se "world_enu"
+open rviz and set frame se "world_enu":
+
+![2025-04-24 19-19-59 的屏幕截图](https://github.com/user-attachments/assets/3a0dfe4e-90ae-44d8-8690-a8cd4f2dddf2)
 
 
 - **To follow a predefined trajectory**, run:
@@ -74,8 +76,11 @@ open rviz and set frame se "world_enu"
   ```bash
   roslaunch se3controller flying_traj_example.launch
   ```
+  We give your a predefault rviz setting, so you can looking into this example for rviz setting including fixed frame, img topic, odomtry topic.
 
-![2025-04-24 19-19-59 的屏幕截图](https://github.com/user-attachments/assets/3a0dfe4e-90ae-44d8-8690-a8cd4f2dddf2)
+![2025-04-24 19-23-58 的屏幕截图](https://github.com/user-attachments/assets/ab26ab64-b533-4181-ae8b-ba5233a42870)
+
+you can looking into this example for rviz setting including fixed frame, img topic, odomtry topic.
 
 > 💡 Only one control mode should be run at a time.
 
