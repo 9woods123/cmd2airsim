@@ -1,8 +1,10 @@
 
+---
+
 # SE3 Controller and EasySim Setup
 
 ## Overview
-This guide explains how to set up and launch the SE3 controller for multicopter takeoff, follow a circular or trajectory path, and receive image messages from Unreal Engine (UE) via EasySim and publish them to ROS.
+This guide explains how to set up and launch the SE3 controller for multicopter takeoff, control the multicopter to follow a circular or trajectory path (choose one), and receive image messages from Unreal Engine (UE) via EasySim and publish them to ROS.
 
 ---
 
@@ -10,14 +12,14 @@ This guide explains how to set up and launch the SE3 controller for multicopter 
 
 ### 0. Clone Repositories and Build the Workspace
 
-Before launching any nodes, make sure you have cloned the necessary packages into your `catkin_ws/src` folder:
+First, clone the necessary packages into your `catkin_ws/src` directory:
 
 ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/9woods123/cmd2airsim.git
 ```
 
-Then go back to the workspace root and build:
+Then, go back to the workspace root and build the project:
 
 ```bash
 cd ~/catkin_ws
@@ -29,7 +31,7 @@ source devel/setup.bash
 
 ### 0.1 Adjust Network Buffer Size
 
-Before launching the image streaming node, increase the network buffer size to avoid dropped image messages:
+Before launching the image streaming node, increase the system network buffer size to avoid dropped image messages:
 
 ```bash
 sudo sysctl -w net.core.rmem_default=8388608
@@ -38,9 +40,15 @@ sudo sysctl -w net.core.rmem_max=8388608
 
 ---
 
-### 1. Launch SE3 Controller for Takeoff
+### 1. Start Unreal Engine (UE) Simulation
 
-In a terminal, run the following command to launch the SE3 controller and take off the multicopter:
+Make sure the UE game environment is already running and ready to simulate the drone before launching the takeoff controller.
+
+---
+
+### 2. Launch SE3 Controller for Takeoff
+
+In a terminal, launch the SE3 controller to take off the multicopter:
 
 ```bash
 roslaunch se3controller se3controller.launch
@@ -48,31 +56,43 @@ roslaunch se3controller se3controller.launch
 
 ---
 
-### 2. Control the Multicopter to Follow a Circle
+### 3. Control the Multicopter (Choose One)
 
-Open a new terminal and run the circular path example:
+After takeoff, you can choose **one** of the following control modes:
 
-```bash
-roslaunch se3controller flying_example.launch
-```
+- **To follow a circular path**, run:
 
----
+  ```bash
+  roslaunch se3controller flying_example.launch
+  ```
 
-### 3. Control the Multicopter to Follow a Trajectory
+- **To follow a predefined trajectory**, run:
 
-In another terminal, run the trajectory-following example:
+  ```bash
+  roslaunch se3controller flying_traj_example.launch
+  ```
 
-```bash
-roslaunch se3controller flying_traj_example.launch
-```
+> 💡 Only one control mode should be run at a time.
 
 ---
 
 ### 4. Launch EasySim ROS Wrapper to Receive Image Messages
 
-In a new terminal, start the EasySim ROS wrapper to receive image data from Unreal Engine:
+To receive and publish image messages from Unreal Engine, start the EasySim ROS wrapper:
 
 ```bash
 roslaunch easysim_ros_wrapper img_ros_node.launch
 ```
 
+> 💡 If you want to **test image reception separately** (without running the full SE3 controller), you can launch only this node to verify communication with Unreal Engine.
+
+---
+
+## Troubleshooting
+
+- ✅ Ensure the **UE environment** is running and properly configured to stream image data.
+- ✅ Verify the **network buffer size** was increased to avoid dropped images.
+- ✅ Make sure you've run `source devel/setup.bash` in each terminal before launching ROS nodes.
+- ✅ If `catkin_make` fails, check for missing ROS dependencies or incorrect package paths.
+
+---
