@@ -1,6 +1,4 @@
 
----
-
 # SE3 Controller and EasySim Setup
 
 ## Overview
