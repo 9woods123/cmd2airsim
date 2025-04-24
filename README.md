@@ -15,8 +15,7 @@ Before launching any nodes, make sure you have cloned the necessary packages int
 
 ```bash
 cd ~/catkin_ws/src
-git clone <SE3_CONTROLLER_REPO_URL>
-git clone <EASYSIM_ROS_WRAPPER_REPO_URL>
+git clone [<SE3_CONTROLLER_REPO_URL>](https://github.com/9woods123/cmd2airsim.git)
 ```
 
 Then go back to the workspace root and build:
