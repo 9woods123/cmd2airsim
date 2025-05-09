@@ -9,6 +9,7 @@ SE3ControllerNode::SE3ControllerNode(ros::NodeHandle& nh, ros::NodeHandle& nh_pr
     setpoint_raw_local_sub_ = nh_.subscribe("position_with_yaw", 1, &SE3ControllerNode::targetCallback, this);
     cmdloop_timer_ = nh_.createTimer(ros::Duration(0.01), &SE3ControllerNode::mainLoop, this);
     reset_service_ = nh_.advertiseService("reset_mav", &SE3ControllerNode::reset_mav_callback, this);
+    collision_srv_ = nh_.advertiseService("check_collision", &SE3ControllerNode::check_collision_callback, this);
     
     setControllerParams();
     controller_.init_controller();
@@ -38,10 +39,12 @@ void SE3ControllerNode::setControllerParams()
     
 }
 
+
+
 bool SE3ControllerNode::reset_mav_callback(std_srvs::Trigger::Request &req,
     std_srvs::Trigger::Response &res)
 {
-    
+
     ROS_WARN("Resetting MAV and environment");
     client.reset();
     client.enableApiControl(true);
@@ -51,6 +54,30 @@ bool SE3ControllerNode::reset_mav_callback(std_srvs::Trigger::Request &req,
 
     res.success = true;
     res.message = "MAV reset and rearmed successfully.";
+
+    return true;
+}
+
+
+bool SE3ControllerNode::check_collision_callback(std_srvs::Trigger::Request &req,
+    std_srvs::Trigger::Response &res)
+{
+    // auto start = std::chrono::high_resolution_clock::now();
+    msr::airlib::CollisionInfo collision_info = client.simGetCollisionInfo();
+
+    // auto end = std::chrono::high_resolution_clock::now();
+    // auto duration_ms = std::chrono::duration_cast
+    // <std::chrono::milliseconds>(end - start).count();
+    
+    // std::cout << "simGetCollisionInfo took " << duration_ms << " ms\n";
+
+    if (collision_info.has_collided) {
+    res.success = true;
+    res.message = "Collision detected with object: " + collision_info.object_name;
+    } else {
+    res.success = false;
+    res.message = "No collision detected.";
+    }
 
     return true;
 }
