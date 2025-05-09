@@ -9,10 +9,7 @@
 #include <se3controller/se3control.h>
 #include <vehicles/multirotor/api/MultirotorRpcLibClient.hpp>
 #include <tf/tf.h>
-
-
-
-
+#include <std_srvs/Trigger.h>  // 注意包含头文件
 
 
 class SE3ControllerNode
@@ -36,6 +33,8 @@ private:
     void mainLoop(const ros::TimerEvent &event);
     void pub_attitude_cmd(const mav_control::control_cmd &cmd);
     void init_mav();
+    bool reset_mav_callback(std_srvs::Trigger::Request &req,
+        std_srvs::Trigger::Response &res);
 
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
@@ -43,6 +42,8 @@ private:
     ros::Subscriber setpoint_raw_local_sub_;
     ros::Timer cmdloop_timer_;
 
+    ros::ServiceServer reset_service_;
+    
     FlightState flight_state_; // Current flight state
     geometry_msgs::PoseStamped fcu_position_;
     geometry_msgs::TwistStamped fcu_velocity_;

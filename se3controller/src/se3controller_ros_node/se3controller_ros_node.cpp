@@ -8,10 +8,12 @@ SE3ControllerNode::SE3ControllerNode(ros::NodeHandle& nh, ros::NodeHandle& nh_pr
     odom_sub_ = nh_.subscribe("odometry_topic", 1, &SE3ControllerNode::odometryCallback, this);
     setpoint_raw_local_sub_ = nh_.subscribe("position_with_yaw", 1, &SE3ControllerNode::targetCallback, this);
     cmdloop_timer_ = nh_.createTimer(ros::Duration(0.01), &SE3ControllerNode::mainLoop, this);
+    reset_service_ = nh_.advertiseService("reset_mav", &SE3ControllerNode::reset_mav_callback, this);
     
     setControllerParams();
     controller_.init_controller();
 }
+
 
 void SE3ControllerNode::setControllerParams()
 {
@@ -35,6 +37,24 @@ void SE3ControllerNode::setControllerParams()
     controller_.setProportionParams(Kp_x, Kp_y, Kp_z, Kv_x, Kv_y, Kv_z, attctrl_tau_,norm_thrust_const_,max_fb_acc_);
     
 }
+
+bool SE3ControllerNode::reset_mav_callback(std_srvs::Trigger::Request &req,
+    std_srvs::Trigger::Response &res)
+{
+    
+    ROS_WARN("Resetting MAV and environment");
+    client.reset();
+    client.enableApiControl(true);
+    client.armDisarm(true);
+    ROS_INFO("Resetting SE3controller Flight State");
+    flight_state_ = TAKEOFF;
+
+    res.success = true;
+    res.message = "MAV reset and rearmed successfully.";
+
+    return true;
+}
+
 
 void SE3ControllerNode::odometryCallback(const nav_msgs::Odometry::ConstPtr &msg)
 {
@@ -103,6 +123,7 @@ void SE3ControllerNode::mainLoop(const ros::TimerEvent &event) {
             control_target_.velocity.setZero();
             control_target_.acceleration.setZero();
             control_target_.yaw = current_yaw;
+            std::cout << "=================TAKEOFF==================" << std::endl;
 
             // Check if the drone has reached the desired takeoff height
             if (fabs(fcu_position_.pose.position.z - take_off_height_) < height_tolerance_) {
@@ -110,6 +131,7 @@ void SE3ControllerNode::mainLoop(const ros::TimerEvent &event) {
                 std::cout << "=================Hovering==================" << std::endl;
             }
             break;
+
 
         case HOVER:
             // do nothing to control_target_ which means hovering.  by woods
@@ -169,6 +191,7 @@ void SE3ControllerNode::run()
 {
     ros::spin();
 }
+
 
 int main(int argc, char **argv)
 {
