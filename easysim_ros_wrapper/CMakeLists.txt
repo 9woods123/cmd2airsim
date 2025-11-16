@@ -57,6 +57,9 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
 )
 
+
+
+
 add_library(easysim_ros_wrapper 
 src/easysim_ros_wrapper.cpp)
 
