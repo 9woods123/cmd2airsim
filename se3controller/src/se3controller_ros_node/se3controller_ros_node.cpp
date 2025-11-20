@@ -39,24 +39,81 @@ void SE3ControllerNode::setControllerParams()
     
 }
 
-
-
 bool SE3ControllerNode::reset_mav_callback(std_srvs::Trigger::Request &req,
-    std_srvs::Trigger::Response &res)
+                                           std_srvs::Trigger::Response &res)
 {
-
     ROS_WARN("Resetting MAV and environment");
-    client.reset();
-    client.enableApiControl(true);
-    client.armDisarm(true);
-    ROS_INFO("Resetting SE3controller Flight State");
-    flight_state_ = TAKEOFF;
 
-    res.success = true;
-    res.message = "MAV reset and rearmed successfully.";
+    try {
+        // 暂停
+
+        // 重置位置（用你初始 spawn pose）
+        msr::airlib::Pose start_pose;
+        start_pose.position = msr::airlib::Vector3r(0, 0, 0);  // 替换成你真实初始位置
+        // 角度转弧度
+        float deg2rad = M_PI / 180.0;
+        float roll  = 0 * deg2rad;
+        float pitch = 0 * deg2rad;
+        float yaw   = 0 * deg2rad;  // 比如 yaw 旋转 90°
+        Eigen::Vector4d quat= euler2quaternion(roll, pitch, yaw);
+
+        msr::airlib::Quaternionr q;
+        q.x()=quat.x();
+        q.y()=quat.y();
+        q.z()=quat.z();
+        q.w()=quat.w();
+
+        start_pose.orientation = q;
+
+
+        client.moveByVelocityAsync(0,0,0,0.1)->waitOnLastTask();
+        client.moveByAngleRatesThrottleAsync(0,0,0,0,0.1)->waitOnLastTask();
+        client.simSetVehiclePose(start_pose, true);
+
+        client.reset();
+
+
+
+
+        // 重新开启 API 控制并解锁
+        client.enableApiControl(true);
+        client.armDisarm(true);
+
+        flight_state_ = TAKEOFF;
+        res.success = true;
+        res.message = "MAV manually reset successfully.";
+    } catch (const std::exception &e) {
+        ROS_ERROR("Reset failed: %s", e.what());
+        res.success = false;
+        res.message = "Reset failed due to exception";
+    }
 
     return true;
 }
+
+
+
+// bool SE3ControllerNode::reset_mav_callback(std_srvs::Trigger::Request &req,
+//     std_srvs::Trigger::Response &res)
+// {
+
+//     ROS_WARN("Resetting MAV and environment");
+
+
+    
+//     client.reset();
+//     ros::Duration(0.5).sleep();  // 等待 1 秒（可根据情况调整）
+    
+//     client.enableApiControl(true);
+//     client.armDisarm(true);
+//     ROS_INFO("Resetting SE3controller Flight State");
+//     flight_state_ = TAKEOFF;
+
+//     res.success = true;
+//     res.message = "MAV reset and rearmed successfully.";
+
+//     return true;
+// }
 
 
 bool SE3ControllerNode::check_collision_callback(std_srvs::Trigger::Request &req,

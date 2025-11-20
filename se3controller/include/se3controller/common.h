@@ -121,4 +121,24 @@ inline Eigen::Vector4d rot2Quaternion(const Eigen::Matrix3d &R) {
   return quat;
 }
 
+
+inline Eigen::Vector4d euler2quaternion(float roll, float pitch, float yaw) {
+    // roll, pitch, yaw in radians
+    float cy = cos(yaw * 0.5f);
+    float sy = sin(yaw * 0.5f);
+    float cp = cos(pitch * 0.5f);
+    float sp = sin(pitch * 0.5f);
+    float cr = cos(roll * 0.5f);
+    float sr = sin(roll * 0.5f);
+
+    Eigen::Vector4d quat;
+    quat.w() = cr * cp * cy + sr * sp * sy;
+    quat.x() = sr * cp * cy - cr * sp * sy;
+    quat.y() = cr * sp * cy + sr * cp * sy;
+    quat.z() = cr * cp * sy - sr * sp * cy;
+
+    return quat;
+}
+
+
 #endif

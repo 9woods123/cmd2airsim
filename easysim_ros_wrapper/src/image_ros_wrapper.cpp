@@ -9,7 +9,7 @@
 void rgb_image_callback(const std::vector<uint8_t>& image_data,
                         const ImageMetaData& metadata,
                         image_transport::Publisher& pub) {
-  std::cout << "============= RGB Image Callback =============" << std::endl;
+  // std::cout << "============= RGB Image Callback =============" << std::endl;
 
   cv::Mat img(metadata.height, metadata.width, CV_8UC3,
               const_cast<uint8_t*>(image_data.data()));
@@ -29,7 +29,7 @@ void rgb_image_callback(const std::vector<uint8_t>& image_data,
 void depth_image_callback(const std::vector<uint8_t>& image_data,
                           const ImageMetaData& metadata,
                           image_transport::Publisher& pub) {
-  std::cout << "============= Depth Image Callback =============" << std::endl;
+  // std::cout << "============= Depth Image Callback =============" << std::endl;
 
   cv::Mat img(metadata.height, metadata.width, CV_8UC3,
               const_cast<uint8_t*>(image_data.data()));
